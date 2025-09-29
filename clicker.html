@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mango Clicker 🍊</title>
+  <link rel="stylesheet" href="style/style.css">
+  <link rel="stylesheet" href="style/main.css">
+  <link rel="stylesheet" href="style/sidebar.css">
+  <link rel="stylesheet" href="style/responsive.css">
+</head>
+
+<body>
+  <div id="scores-container">
+    <div class="score-global-container">
+      <img src="img/Mango.png" alt="Mango" class="score-global">
+      <span id="mango-score">0</span>
+    </div>
+    <div class="score-global-container">
+      <img src="img/Apple.png" alt="Apple" class="score-global">
+      <span id="apple-score">0</span>
+    </div>
+    <div class="score-global-container">
+      <img src="img/Strawberry.png" alt="Strawberry" class="score-global">
+      <span id="strawberry-score">0</span>
+    </div>
+  </div>
+
+  <main>
+
+    <div class="game-area">
+
+
+      <div>
+        <div class="score">Punkty: <span id="score">0</span></div>
+        <img src="img/Mango.png" alt="Mango" class="fruit" id="fruit">
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div id="fruit_types" style="display:flex; gap:10px; margin-bottom:10px;">
+        <img id="mango" class="fruit_type" src="img/Mango.png" alt="Mango">
+        <img id="apple" class="fruit_type" src="img/Apple.png" alt="Apple">
+        <img id="strawberry" class="fruit_type" src="img/Strawberry.png" alt="Strawberry">
+        <img id="avocado" class="fruit_type" src="img/Avocado.png" alt="Avocado">
+        <img id="dragonfruit" class="fruit_type" src="img/Dragonfruit.png" alt="Dragonfruit">
+        <img id="orange" class="fruit_type" src="img/Orange.png" alt="Orange">
+      </div>
+
+      <div id="upgrades"><!-- tutaj JS wrzuci upgrady --></div>
+    </div>
+
+  </main>
+  <script>
+
+    // ==================== ZMIENNE ====================//
+
+    const mainFruitImages = {
+      mango: "img/Mango.png",
+      apple: "img/Apple.png",
+      strawberry: "img/Strawberry.png",
+      avocado: "img/Avocado.png",
+      dragonfruit: "img/Dragonfruit.png",
+      orange: "img/Orange.png"
+    };
+
+    const fruitThemes = {
+      mango: { body: "linear-gradient(to bottom,#fff8dc,#ffe680)", sidebar: "#fff3b0", z: 10 },
+      apple: { body: "linear-gradient(to bottom,#ffe6e6,#ff9999)", sidebar: "#ffcccc", z: 20 },
+      strawberry: { body: "linear-gradient(to bottom,#ffe6f2,#ff80bf)", sidebar: "#ffcce6", z: 30 },
+      avocado: { body: "linear-gradient(to bottom,#e6ffe6,#80ff80)", sidebar: "#ccffcc", z: 40 },
+      dragonfruit: { body: "linear-gradient(to bottom,#ffe6ff,#ff80ff)", sidebar: "#ffccff", z: 50 },
+      orange: { body: "linear-gradient(to bottom,#fff5e6,#ffcc80)", sidebar: "#ffe0b3", z: 60 }
+    };
+
+    const fruitUpgrades = {
+      mango: [
+        {
+          id: "mango_collector", name: "Mango Zbieracz", desc: "+1 punkt za klik",
+          cost: { mango: 10 }   
+        },
+        {
+          id: "auto_mango", name: "Automatyczny zbieracz", desc: "1 punkt co sekundę",
+          cost: { mango: 30, apple: 10 }
+        }
+      ],
+      apple: [
+        {
+          id: "bigger_apple", name: "Soczyste jabłko", desc: "+2 punkty za klik",
+          cost: { apple: 15 }  
+        },
+        {
+          id: "auto_apple", name: "Koszyk jabłek", desc: "2 punkty co sekundę",
+          cost: { apple: 20, mango: 5 }
+        }
+      ],
+      strawberry: [
+        {
+          id: "bigger_strawberry", name: "Mega truskawka", desc: "+3 punkty za klik",
+          cost: { strawberry: 20 } 
+        },
+        {
+          id: "mix_upgrade", name: "Owocowa Fuzja", desc: "Specjalny bonus",
+          cost: { mango: 10, strawberry: 10 }
+        },
+        {
+          id: "alt_upgrade", name: "Alternatywny zakup", desc: "Możesz zapłacić mango LUB truskawkami",
+          cost: [{ mango: 30 }, { strawberry: 15 }] 
+        }
+      ]
+    };
+
+
+
+    let fruitScores = {
+      mango: 0,
+      apple: 0,
+      strawberry: 0,
+      avocado: 0,
+      dragonfruit: 0,
+      orange: 0
+    };
+
+    const fruitTypes = document.querySelectorAll(".fruit_type");
+    const mainFruit = document.getElementById("fruit");
+
+    const gameArea = document.querySelector(".game-area");
+
+    const sidebar = document.querySelector(".sidebar");
+
+    const scoreImg = document.querySelector(".score");
+  const scoreSpan = document.getElementById("score");
+
+
+
+
+  </script>
+</body>
+
+</html>
+<script>
+  /* 
+  Local storage:
+  -savedfruit
+   */
+  // ==================== Zapisanie fruitascorow ====================//
+
+  let savedScores = localStorage.getItem("fruitScores");
+  if (savedScores) {
+    fruitScores = JSON.parse(savedScores);
+  }
+  updateGlobalScores()
+
+  // ==================== Zapisanie fruita ====================//
+
+  let savedFruit = localStorage.getItem("selectedFruit") || "mango";
+  fruitTypes.forEach(fruit => {
+    fruit.addEventListener("click", () => {
+      savedFruit = fruit.id;
+      mainFruit.src = mainFruitImages[savedFruit];
+      localStorage.setItem("selectedFruit", savedFruit);
+      // ==================== Animacja game area ====================//
+
+      gameArea.classList.add("game-area-animate")
+
+      setTimeout(() => {
+        gameArea.classList.remove("game-area-animate");
+      }, 1000);
+
+      loadUpgradesFor(savedFruit);
+    });
+  });
+  mainFruit.src = mainFruitImages[savedFruit] || "mango";
+
+
+  document.getElementById("score").textContent = fruitScores[savedFruit];
+
+
+
+  fruit.addEventListener("click", () => {
+    // score++;
+    // document.getElementById("score").textContent = score;
+    fruitScores[savedFruit]++;
+    localStorage.setItem("fruitScores", JSON.stringify(fruitScores));
+
+    updateGlobalScores()
+  })
+  // ==================== Ładowanie wynikow w header ====================//
+
+function updateGlobalScores() {
+  for (let fruit in fruitScores) {
+    const el = document.getElementById(fruit + "-score");
+    if (el) el.textContent = fruitScores[fruit];
+  }
+
+  scoreSpan.textContent = fruitScores[savedFruit];
+}
+
+
+
+  // ==================== Zmiana upgradow ====================//
+  function loadUpgradesFor(fruit) {
+    const upgradesContainer = document.getElementById("upgrades");
+    upgradesContainer.innerHTML = ""; // wyczyść stare
+
+    fruitUpgrades[fruit].forEach(upgrade => {
+      const div = document.createElement("div");
+      div.classList.add("upgrades");
+      div.id = upgrade.id;
+      div.innerHTML = `
+          <strong>${upgrade.name}</strong><br>
+          ${upgrade.desc}<br>
+          Koszt: ${formatCost(upgrade.cost)}
+        `;
+
+      div.addEventListener("click", () => {
+        alert("Kupiles upgrade: " + upgrade.name);
+
+      });
+
+      upgradesContainer.appendChild(div);
+    });
+  }
+
+  // ==================== Sprawdzanie/foramtowanie kosztow czy tabelka cze nie ====================//
+  
+  function formatCost(cost) {
+    if (Array.isArray(cost)) {
+      return cost.map(option =>
+        Object.entries(option).map(([fruit, amount]) => `${amount}x ${fruit}`).join(" + ")
+      ).join(" LUB ");
+    } else {
+      return Object.entries(cost).map(([fruit, amount]) => `${amount}x ${fruit}`).join(" + ");
+    }
+  }
+  // ==================== Czy starzczy pkt ====================//
+
+  function canAfford(cost, scores) {
+    if (Array.isArray(cost)) {
+      return cost.some(option =>
+        Object.entries(option).every(([fruit, amount]) => scores[fruit] >= amount)
+      );
+    } else {
+      return Object.entries(cost).every(([fruit, amount]) => scores[fruit] >= amount);
+    }
+  }
+
+  // ==================== Odjecie pkt ====================//
+  
+  function payCost(cost, scores) {
+    if (Array.isArray(cost)) {
+      for (let option of cost) {
+        if (Object.entries(option).every(([fruit, amount]) => scores[fruit] >= amount)) {
+          Object.entries(option).forEach(([fruit, amount]) => {
+            scores[fruit] -= amount;
+          });
+          break;
+        }
+      }
+    } else {
+      Object.entries(cost).forEach(([fruit, amount]) => {
+        scores[fruit] -= amount;
+      });
+    }
+  }
+
+  // ==================== Przystosowanie margina game-area i sidebar do headera ====================//
+
+  function adjustLayoutMargin() {
+    const scoresHeight = document.getElementById("scores-container").offsetHeight;
+    document.querySelector(".sidebar").style.marginTop = scoresHeight + "px";
+    document.querySelector(".game-area").style.marginTop = scoresHeight + "px";
+  }
+
+  window.addEventListener("load", adjustLayoutMargin);
+  window.addEventListener("resize", adjustLayoutMargin);
+
+</script>

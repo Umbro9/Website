@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mango Clicker 🍊</title>
+  <link rel="stylesheet" href="style/style.css">
+  <link rel="stylesheet" href="style/main.css">
+  <link rel="stylesheet" href="style/sidebar.css">
+  <link rel="stylesheet" href="style/responsive.css">
+</head>
+
+<body>
+            <div id="scores-container">
+        <div class="score-global-container"><img src="img/Mango.png" alt="Mango" class="score-global"></div>
+        <div class="score-global-container"><img src="" alt="Apple" class="score-global"></div>
+        <div class="score-global-container"><img src="img/Strawberry.png" alt="Strawberry" class="score-global"></div>
+        <div class="score-global-container"><img src="" alt="Avocado" class="score-global"></div>
+        <div class="score-global-container"><img src="" alt="Dragonfruit" class="score-global"></div>
+        <div class="score-global-container"><img src="" alt="Orange" class="score-global"></div>
+      </div>
+  <main>
+
+          <div class="game-area">
+
+
+      <div>
+        <div class="score">Punkty: <span id="score">0</span></div>
+        <img src="img/Mango.png" alt="Mango" class="fruit" id="fruit">
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div id="fruit_types" style="display:flex; gap:10px; margin-bottom:10px;">
+        <img id="mango" class="fruit_type" src="img/Mango.png" alt="Mango">
+        <img id="apple" class="fruit_type" src="img/Apple.png" alt="Apple">
+        <img id="strawberry" class="fruit_type" src="img/Strawberry.png" alt="Strawberry">
+        <img id="avocado" class="fruit_type" src="img/Avocado.png" alt="Avocado">
+        <img id="dragonfruit" class="fruit_type" src="img/Dragonfruit.png" alt="Dragonfruit">
+        <img id="orange" class="fruit_type" src="img/Orange.png" alt="Orange">
+      </div>
+
+      <div id="upgrades"><!-- tutaj JS wrzuci upgrady --></div>
+    </div>
+
+  </main>
+  <script>
+
+    // ==================== ZMIENNE ====================//
+
+    const mainFruitImages = {
+      mango: "img/Mango.png",
+      apple: "img/Apple.png",
+      strawberry: "img/Strawberry.png",
+      avocado: "img/Avocado.png",
+      dragonfruit: "img/Dragonfruit.png",
+      orange: "img/Orange.png"
+    };
+
+    const fruitThemes = {
+      mango: { body: "linear-gradient(to bottom,#fff8dc,#ffe680)", sidebar: "#fff3b0", z: 10 },
+      apple: { body: "linear-gradient(to bottom,#ffe6e6,#ff9999)", sidebar: "#ffcccc", z: 20 },
+      strawberry: { body: "linear-gradient(to bottom,#ffe6f2,#ff80bf)", sidebar: "#ffcce6", z: 30 },
+      avocado: { body: "linear-gradient(to bottom,#e6ffe6,#80ff80)", sidebar: "#ccffcc", z: 40 },
+      dragonfruit: { body: "linear-gradient(to bottom,#ffe6ff,#ff80ff)", sidebar: "#ffccff", z: 50 },
+      orange: { body: "linear-gradient(to bottom,#fff5e6,#ffcc80)", sidebar: "#ffe0b3", z: 60 }
+    };
+
+    const fruitUpgrades = {
+      mango: [
+        {
+          id: "mango_collector", name: "Mango Zbieracz", desc: "+1 punkt za klik",
+          cost: { mango: 10 }   // koszt tylko w mango
+        },
+        {
+          id: "auto_mango", name: "Automatyczny zbieracz", desc: "1 punkt co sekundę",
+          cost: { mango: 30, apple: 10 } // koszt w dwóch walutach jednocześnie
+        }
+      ],
+      apple: [
+        {
+          id: "bigger_apple", name: "Soczyste jabłko", desc: "+2 punkty za klik",
+          cost: { apple: 15 }   // koszt tylko w jabłkach
+        },
+        {
+          id: "auto_apple", name: "Koszyk jabłek", desc: "2 punkty co sekundę",
+          cost: { apple: 20, mango: 5 } // np. kombinacja 
+        }
+      ],
+      strawberry: [
+        {
+          id: "bigger_strawberry", name: "Mega truskawka", desc: "+3 punkty za klik",
+          cost: { strawberry: 20 } // koszt w truskawkach
+        },
+        {
+          id: "mix_upgrade", name: "Owocowa Fuzja", desc: "Specjalny bonus",
+          cost: { mango: 10, strawberry: 10 } // płacisz za oba
+        },
+        {
+          id: "alt_upgrade", name: "Alternatywny zakup", desc: "Możesz zapłacić mango LUB truskawkami",
+          cost: [{ mango: 30 }, { strawberry: 15 }] // alternatywny koszt
+        }
+      ]
+    };
+
+
+
+    let fruitScores = {
+      mango: 0,
+      apple: 0,
+      strawberry: 0,
+      avocado: 0,
+      dragonfruit: 0,
+      orange: 0
+    };
+
+    const fruitTypes = document.querySelectorAll(".fruit_type");
+    const mainFruit = document.getElementById("fruit");
+
+    const gameArea = document.querySelector(".game-area");
+
+    const sidebar = document.querySelector(".sidebar")
+
+    let score = 0;
+
+  </script>
+</body>
+
+</html>
+<script>
+  // ==================== Zapisanie fruita ====================//
+
+  let savedFruit = localStorage.getItem("selectedFruit") || "mango";
+  fruitTypes.forEach(fruit => {
+    fruit.addEventListener("click", () => {
+      savedFruit = fruit.id;
+      mainFruit.src = mainFruitImages[savedFruit];
+      localStorage.setItem("selectedFruit", savedFruit);
+      // ==================== Animacja game area ====================//
+
+      gameArea.classList.add("game-area-animate")
+
+      setTimeout(() => {
+        gameArea.classList.remove("game-area-animate");
+      }, 1000);
+
+      loadUpgradesFor(savedFruit);
+    });
+  });
+  mainFruit.src = mainFruitImages[savedFruit] || "mango";
+
+
+  document.getElementById("score").textContent = fruitScores[savedFruit];
+
+
+
+  fruit.addEventListener("click", () => {
+    // score++;
+    // document.getElementById("score").textContent = score;
+    fruitScores[savedFruit]++;
+    localStorage.setItem("fruitScores", JSON.stringify(fruitScores));
+
+    document.getElementById("score").textContent = fruitScores[savedFruit];
+
+  })
+
+  // ==================== Zmiana upgradow ====================//
+  function loadUpgradesFor(fruit) {
+    const upgradesContainer = document.getElementById("upgrades");
+    upgradesContainer.innerHTML = ""; // wyczyść stare
+
+    fruitUpgrades[fruit].forEach(upgrade => {
+      const div = document.createElement("div");
+      div.classList.add("upgrades");
+      div.id = upgrade.id;
+      div.innerHTML = `
+          <strong>${upgrade.name}</strong><br>
+          ${upgrade.desc}<br>
+          Koszt: ${formatCost(upgrade.cost)}
+        `;
+
+      div.addEventListener("click", () => {
+        alert("Kupiles upgrade: " + upgrade.name);
+
+      });
+
+      upgradesContainer.appendChild(div);
+    });
+  }
+
+  // Formatowanie kosztu na tekst
+  function formatCost(cost) {
+    if (Array.isArray(cost)) {
+      // koszt alternatywny
+      return cost.map(option =>
+        Object.entries(option).map(([fruit, amount]) => `${amount}x ${fruit}`).join(" + ")
+      ).join(" LUB ");
+    } else {
+      // koszt wymagający wielu owoców naraz
+      return Object.entries(cost).map(([fruit, amount]) => `${amount}x ${fruit}`).join(" + ");
+    }
+  }
+
+  // Czy gracza stać?
+  function canAfford(cost, scores) {
+    if (Array.isArray(cost)) {
+      // alternatywa — wystarczy jedna opcja
+      return cost.some(option =>
+        Object.entries(option).every(([fruit, amount]) => scores[fruit] >= amount)
+      );
+    } else {
+      // wymagane wszystkie owoce
+      return Object.entries(cost).every(([fruit, amount]) => scores[fruit] >= amount);
+    }
+  }
+
+  // Odejmowanie kosztu
+  function payCost(cost, scores) {
+    if (Array.isArray(cost)) {
+      // znajdź pierwszą możliwą opcję i zapłać
+      for (let option of cost) {
+        if (Object.entries(option).every(([fruit, amount]) => scores[fruit] >= amount)) {
+          Object.entries(option).forEach(([fruit, amount]) => {
+            scores[fruit] -= amount;
+          });
+          break;
+        }
+      }
+    } else {
+      // płacisz wszystkimi wymaganymi owocami
+      Object.entries(cost).forEach(([fruit, amount]) => {
+        scores[fruit] -= amount;
+      });
+    }
+  }
+
+</script>
+
+/* sidebar.css */
+.fruit_type {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  background: white;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+}
+
+.fruit_type.selected {
+  border: 2px solid orange;
+  box-shadow: 0 0 5px orange;
+  transform: scale(1.1);
+}
+
+.fruit_type:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 3px orange;
+}
+
+/* ==================== Upgrady ==================== */
+#upgrades {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.upgrades {
+  background: #fff8dc;
+  border: 2px solid #ffcc80;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  font-size: 14px;
+  cursor: pointer; /* wskazuje, że można kliknąć */
+}
+
+.upgrades:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+  background: #fff2b3;
+}
+
+.upgrades strong {
+  font-size: 16px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.upgrades span {
+  font-weight: bold;
+  color: #b36b00;
+}
+
+
+/* layout.css */
+main{
+  margin: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  height: 100vh;
+  background: linear-gradient(to bottom, #fff8dc, #ffe680);
+  overflow: hidden;
+  width: 100%;
+}
+
+.game-area {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.scores-container{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  background-color: red;
+  }
+
+.score-global-container{
+}
+
+.score-global{
+    width: 25vw;
+  max-width: 10px;
+  cursor: pointer;
+}
+
+.score{
+  display: flex;
+  justify-content: center;
+}
+
+.fruit {
+  width: 25vw;
+  max-width: 200px;
+  cursor: pointer;
+}
+
+.fruit:active {
+  transform: scale(0.9);
+}
+
+.sidebar {
+  flex: 1;
+  background: #fff3b0;
+  border-left: 3px solid #e6b800;
+  padding: 0 10px;
+  overflow-y: auto;
+}
+
+/* ==================== Animacja game area ====================*/
+
+.game-area-animate{
+  animation: slide-up 0.8s ease-in-out;
+}
+@keyframes slide-up {
+  0%{
+    transform: translateY(100%);
+    opacity: 0;
+  }
+ 
+  100%{
+    transform: translateY(0%);
+    opacity: 1;
+  }  
+}/* style.css */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  height: 100vh;
+  background: linear-gradient(to bottom, #fff8dc, #ffe680);
+  overflow: hidden;
+}
+
+
+
+img {
+  user-select: none;
+}
+
+
+
+#falling-fruits {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.falling-fruit {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  pointer-events: none;
+  animation: fall linear forwards;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-100px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.score {
+  font-size: 24px;
+  margin-bottom: 20px;
+}

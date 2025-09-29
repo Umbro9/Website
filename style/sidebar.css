@@ -1,0 +1,69 @@
+/* sidebar.css */
+.sidebar {
+  flex: 1;
+  background: #fff3b0;
+  border-left: 3px solid #e6b800;
+  padding: 0 10px;
+  overflow-y: auto;
+}
+
+.fruit_type {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  background: white;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+}
+
+.fruit_type.selected {
+  border: 2px solid orange;
+  box-shadow: 0 0 5px orange;
+  transform: scale(1.1);
+}
+
+.fruit_type:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 3px orange;
+}
+
+/* ==================== Upgrady ==================== */
+#upgrades {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.upgrades {
+  background: #fff8dc;
+  border: 2px solid #ffcc80;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  font-size: 14px;
+  cursor: pointer; /* wskazuje, że można kliknąć */
+}
+
+.upgrades:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+  background: #fff2b3;
+}
+
+.upgrades strong {
+  font-size: 16px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.upgrades span {
+  font-weight: bold;
+  color: #b36b00;
+}
+
+

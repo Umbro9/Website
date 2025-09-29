@@ -1,0 +1,11 @@
+Wyglad strony:
+-zmiana pomedzy owocami.
+-owoc do klikania.
+-upgrade.
+-miejsce na pokazywanie rzeczy duże.
+-sidebar z index duzy.
+2.zalozenia gry.
+gra będzie miała rozne owoce które będą się odblokowywać wraz z lvl lub innym systemem.
+każdy owoc będzie miał swoje zastosowanie np dane upgrady amulety etc potrzebują danych owocow.
+owoce będą ustawiane wg real world vlue or smth ze np jabłko będzie prostsze do zdoycia od dragonfruit etc
+gra całkowicie w html css js i czesc na samiutkim końcu po wszystkim bazy danych najprostrezej bez  php by mieć na usb to wszystko

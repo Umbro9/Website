@@ -1,0 +1,94 @@
+/* layout.css */
+main{
+  margin: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  height: 100vh;
+  background: linear-gradient(to bottom, #fff8dc, #ffe680);
+  overflow: hidden;
+  width: 100%;
+}
+
+.game-area {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* kontener wyników u góry */
+#scores-container {
+  position: fixed;      
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;        
+  justify-content: flex-start; 
+  align-items: center;
+  gap: 10px;            
+  padding: 8px 12px;
+  background: rgba(255, 248, 220, 0.8); 
+  z-index: 999;        
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  #scores-container {
+  flex-wrap: nowrap;
+  overflow-x: auto;   
+  scrollbar-width: thin; 
+}
+
+}
+
+.score-global-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0px 10px;
+  border-right: 2px solid black;
+}
+
+.score-global-container:first-child{
+  border-left: 2px solid black; 
+}
+
+.score-global {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+
+.score{
+  display: flex;
+  justify-content: center;
+}
+
+.fruit {
+  width: 25vw;
+  max-width: 200px;
+  cursor: pointer;
+}
+
+.fruit:active {
+  transform: scale(0.9);
+}
+
+
+
+/* ==================== Animacja game area ====================*/
+
+.game-area-animate{
+  animation: slide-up 0.8s ease-in-out;
+}
+@keyframes slide-up {
+  0%{
+    transform: translateY(100%);
+    opacity: 0;
+  }
+ 
+  100%{
+    transform: translateY(0%);
+    opacity: 1;
+  }  
+}

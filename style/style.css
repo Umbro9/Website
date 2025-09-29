@@ -1,0 +1,52 @@
+/* style.css */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  height: 100vh;
+  background: linear-gradient(to bottom, #fff8dc, #ffe680);
+  overflow: hidden;
+}
+
+
+
+img {
+  user-select: none;
+}
+
+
+
+#falling-fruits {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.falling-fruit {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  pointer-events: none;
+  animation: fall linear forwards;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-100px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.score {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
